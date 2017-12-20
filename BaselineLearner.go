@@ -1,11 +1,11 @@
 package toolkitGo
 
-type BaslineLearner struct{
+type BaselineLearner struct{
 	sl SupervisedLearner
 	m_labels []float64
 }
 
-func (bl BaslineLearner)Train(features, labels Matrix)(error){
+func (bl BaselineLearner)Train(features, labels Matrix)(error){
 	bl.m_labels = make([]float64,labels.Cols())
 	for i := 0; i < labels.Cols(); i++{
 		if labels.ValueCount(i) == 0{
@@ -17,7 +17,7 @@ func (bl BaslineLearner)Train(features, labels Matrix)(error){
 	return nil;
 }
 
-func (bl BaslineLearner)Predict(features, labels []float64)(error){
+func (bl BaselineLearner)Predict(features, labels []float64)(error){
 	for i := 0; i < len(bl.m_labels); i++{
 		labels[i] = bl.m_labels[i];
 	}
