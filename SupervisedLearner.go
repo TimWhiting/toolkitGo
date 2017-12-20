@@ -4,10 +4,17 @@ import (
 	"fmt"
 	"math"
 )
-
-type SupervisedLearner struct{
-
+type Learner interface {
+	Train(features, labels Matrix)error
+	Predict(features, labels []float64)error
+	MeasureAccuracy(features,labels,confusion Matrix)(float64,error)
 }
+type SupervisedLearner struct{
+	Learner
+}
+
+
+
 // Before you call this method, you need to divide your data
 // into a feature matrix and a label matrix.
 func (s SupervisedLearner) Train(features, labels Matrix)error{

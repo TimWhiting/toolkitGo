@@ -206,24 +206,24 @@ func (m Matrix)ValueCount(c int)int{
 }
 
 // Shuffles the row order
-func (m Matrix)Shuffle(rand rand.Rand){
+func (m Matrix)Shuffle(rand Random){
 	for n := m.Rows(); n > 0; n--{
-		i := rand.Int();
+		i := rand.NextInt(uint64(n));
 		tmp := m.Row(n-1);
-		m.m_data[n-1] = m.Row(i)
+		m.m_data[n-1] = m.Row(int(i))
 		m.m_data[i] = tmp;
 	}
 }
 
 // Shuffles the row order with a buddy matrix
-func (m Matrix)ShuffleWithBuddy(rand rand.Rand, buddy Matrix ) {
+func (m Matrix)ShuffleWithBuddy(rand Random, buddy Matrix ) {
 	for n := m.Rows(); n > 0; n-- {
-		i := rand.Int();
+		i := rand.NextInt(uint64(n));
 		tmp := m.Row(n - 1);
-		m.m_data[n - 1] =  m.Row(i);
+		m.m_data[n - 1] =  m.Row(int(i));
 		m.m_data[i] = tmp
 		tmp1 := buddy.Row(n - 1);
-		buddy.m_data [n - 1] =  buddy.Row(i);
+		buddy.m_data [n - 1] =  buddy.Row(int(i));
 		buddy.m_data[i] = tmp1;
 	}
 }

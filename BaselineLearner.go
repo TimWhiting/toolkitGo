@@ -1,7 +1,7 @@
 package toolkitGo
 
 type BaselineLearner struct{
-	sl SupervisedLearner
+	*SupervisedLearner
 	m_labels []float64
 }
 
