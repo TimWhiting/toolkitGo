@@ -1,11 +1,11 @@
 package toolkitGo
 
 import (
-	"math/rand"
 	"flag"
 	"fmt"
 	"time"
 	"strconv"
+	"github.com/TimWhiting/perceptronLab"
 )
 
 type MLSystemManager struct{
@@ -43,10 +43,11 @@ func main(){
 	ml.Run(args);
 }
 
-func (ml MLSystemManager)GetLearner(mod string, rand rand.Rand)(Learner, error){
+func (ml MLSystemManager)GetLearner(mod string, rand Random)(Learner, error){
 	if mod == "baseline" {
-		return BaselineLearner{}, nil
-		// else if (model.equals("perceptron")) return new Perceptron(rand);
+		return BaselineLearner{}, nil;
+	} else if mod ==("perceptron") {
+		return perceptronLab.NewPerceptron(rand), nil;
 		// else if (model.equals("neuralnet")) return new NeuralNet(rand);
 		// else if (model.equals("decisiontree")) return new DecisionTree();
 		// else if (model.equals("knn")) return new InstanceBasedLearner();
@@ -55,7 +56,7 @@ func (ml MLSystemManager)GetLearner(mod string, rand rand.Rand)(Learner, error){
 	}
 }
 func (ml MLSystemManager)Run(args Args)(error){
-	learner, _ := ml.GetLearner(args.Learner,rand.Rand{});
+	learner, _ := ml.GetLearner(args.Learner,Random{});
 	data := NewEmptyMatrix();
 	data.LoadArff(args.Arff);
 	if args.Normalize {
