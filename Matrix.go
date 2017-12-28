@@ -2,7 +2,6 @@ package toolkitGo
 import (
 "github.com/emirpasic/gods/maps/treemap"
 	"math"
-	"math/rand"
 	"fmt"
 	"bufio"
 	"os"
