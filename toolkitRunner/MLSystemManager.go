@@ -1,10 +1,12 @@
-package toolkitGo
+package toolkitRunner
 
 import (
 	"flag"
 	"fmt"
 	"time"
 	"strconv"
+	"github.com/TimWhiting/toolkitGo/toolkit"
+	"github.com/TimWhiting/toolkitGo/learners"
 	"github.com/TimWhiting/perceptronLab"
 )
 
@@ -43,9 +45,9 @@ func main(){
 	ml.Run(args);
 }
 
-func (ml MLSystemManager)GetLearner(mod string, rand Random)(Learner, error){
+func (ml MLSystemManager)GetLearner(mod string, rand toolkit.Random)(toolkit.Learner, error){
 	if mod == "baseline" {
-		return BaselineLearner{}, nil;
+		return learners.BaselineLearner{}, nil;
 	} else if mod ==("perceptron") {
 		return perceptronLab.NewPerceptron(rand), nil;
 		// else if (model.equals("neuralnet")) return new NeuralNet(rand);
@@ -56,14 +58,14 @@ func (ml MLSystemManager)GetLearner(mod string, rand Random)(Learner, error){
 	}
 }
 func (ml MLSystemManager)Run(args Args)(error){
-	learner, _ := ml.GetLearner(args.Learner,Random{});
-	data := NewEmptyMatrix();
+	learner, _ := ml.GetLearner(args.Learner,toolkit.Random{});
+	data := toolkit.NewEmptyMatrix();
 	data.LoadArff(args.Arff);
 	if args.Normalize {
 		fmt.Println("Using normalized data\n")
 		data.Normalize()
 	}
-	rand := Random{};
+	rand := toolkit.Random{};
 	fmt.Println();
 	fmt.Println("Dataset name:" ,args.Arff);
 	fmt.Println("Number of instances: ",data.Rows());
@@ -73,9 +75,9 @@ func (ml MLSystemManager)Run(args Args)(error){
 	fmt.Println();
 	if args.Evaluation == "training"{
 		fmt.Println("Calculating accuracy on training set...");
-		features := NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
-		labels := NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
-		confusion := NewEmptyMatrix();
+		features := toolkit.NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
+		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
+		confusion := toolkit.NewEmptyMatrix();
 		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
 		learner.Train(features, labels);
 		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
@@ -88,7 +90,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 			fmt.Println("\n");
 		}
 	} else if args.Evaluation == "static"{
-		testData := NewEmptyMatrix();
+		testData := toolkit.NewEmptyMatrix();
 		testData.LoadArff(args.EvalExtra);
 		if args.Normalize {
 			testData.Normalize(); // BUG! This may normalize differently from the training data. It should use the same ranges for normalization!
@@ -96,17 +98,17 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Calculating accuracy on separate test set...");
 		fmt.Println("Test set name: " , args.EvalExtra);
 		fmt.Println("Number of test instances: " ,testData.Rows());
-		features :=  NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
-		labels := NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
+		features := toolkit.NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
+		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
 		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
 		learner.Train(features, labels);
 		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
 		fmt.Println("Time to train (in seconds): " , elapsedTime / 1000.0);
-		trainAccuracy,_ := learner.MeasureAccuracy(features, labels, NewEmptyMatrix());
+		trainAccuracy,_ := learner.MeasureAccuracy(features, labels, toolkit.NewEmptyMatrix());
 		fmt.Println("Training set accuracy: " , trainAccuracy);
-		testFeatures := NewMatrix(testData, 0, 0, testData.Rows(), testData.Cols() - 1);
-		testLabels := NewMatrix(testData, 0, testData.Cols() - 1, testData.Rows(), 1);
-		confusion := NewEmptyMatrix();
+		testFeatures := toolkit.NewMatrix(testData, 0, 0, testData.Rows(), testData.Cols() - 1);
+		testLabels := toolkit.NewMatrix(testData, 0, testData.Cols() - 1, testData.Rows(), 1);
+		confusion := toolkit.NewEmptyMatrix();
 		testAccuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, confusion);
 		fmt.Println("Test set accuracy: " , testAccuracy);
 		if args.Verbose {
@@ -124,17 +126,17 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Percentage used for testing: " ,(1 - trainPercent));
 		data.Shuffle(rand);
 		trainSize := int(trainPercent * float64(data.Rows()));
-		trainFeatures := NewMatrix(data, 0, 0, trainSize, data.Cols() - 1);
-		trainLabels := NewMatrix(data, 0, data.Cols() - 1, trainSize, 1);
-		testFeatures := NewMatrix(data, trainSize, 0, data.Rows() - trainSize, data.Cols() - 1);
-		testLabels := NewMatrix(data, trainSize, data.Cols() - 1, data.Rows() - trainSize, 1);
+		trainFeatures := toolkit.NewMatrix(data, 0, 0, trainSize, data.Cols() - 1);
+		trainLabels := toolkit.NewMatrix(data, 0, data.Cols() - 1, trainSize, 1);
+		testFeatures := toolkit.NewMatrix(data, trainSize, 0, data.Rows() - trainSize, data.Cols() - 1);
+		testLabels := toolkit.NewMatrix(data, trainSize, data.Cols() - 1, data.Rows() - trainSize, 1);
 		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
 		learner.Train(trainFeatures, trainLabels);
 		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
 		fmt.Println("Time to train (in seconds): " , elapsedTime / 1000.0);
-		trainAccuracy,_ := learner.MeasureAccuracy(trainFeatures, trainLabels, NewEmptyMatrix());
+		trainAccuracy,_ := learner.MeasureAccuracy(trainFeatures, trainLabels, toolkit.NewEmptyMatrix());
 		fmt.Println("Training set accuracy: " ,trainAccuracy);
-		confusion := NewEmptyMatrix();
+		confusion := toolkit.NewEmptyMatrix();
 		testAccuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, confusion);
 		fmt.Println("Test set accuracy: " ,testAccuracy);
 		if args.Verbose {
@@ -158,16 +160,16 @@ func (ml MLSystemManager)Run(args Args)(error){
 			for i := 0; i < int(folds); i++ {
 				begin := i * data.Rows()/ int(folds);
 				end :=(i + 1) * data.Rows() / int(folds);
-				trainFeatures := NewMatrix(data, 0, 0, begin, data.Cols() - 1);
-				trainLabels := NewMatrix(data, 0, data.Cols() - 1, begin, 1);
-				testFeatures := NewMatrix(data, begin, 0, end - begin, data.Cols() - 1);
-				testLabels := NewMatrix(data, begin, data.Cols() - 1, end - begin, 1);
+				trainFeatures := toolkit.NewMatrix(data, 0, 0, begin, data.Cols() - 1);
+				trainLabels := toolkit.NewMatrix(data, 0, data.Cols() - 1, begin, 1);
+				testFeatures := toolkit.NewMatrix(data, begin, 0, end - begin, data.Cols() - 1);
+				testLabels := toolkit.NewMatrix(data, begin, data.Cols() - 1, end - begin, 1);
 				trainFeatures.Add(data, end, 0, data.Rows() - end);
 				trainLabels.Add(data, end, data.Cols() - 1, data.Rows() - end);
 				startTime := float64(time.Now().UnixNano())/float64(time.Millisecond);
 				learner.Train(trainFeatures, trainLabels);
 				elapsedTime += float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
-				accuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, NewEmptyMatrix());
+				accuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, toolkit.NewEmptyMatrix());
 				sumAccuracy += accuracy;
 				fmt.Println("Rep=" , j , ", Fold=" , i , ", Accuracy=" , accuracy);
 			}
@@ -176,4 +178,5 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Average time to train (in seconds): " , elapsedTime / 1000.0);
 		fmt.Println("Mean accuracy=" , (sumAccuracy / float64(reps * int(folds))));
 	}
+	return nil;
 }

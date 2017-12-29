@@ -1,11 +1,13 @@
-package toolkitGo
+package learners
+
+import "github.com/TimWhiting/toolkitGo/toolkit"
 
 type BaselineLearner struct{
-	*SupervisedLearner
+	*toolkit.SupervisedLearner
 	m_labels []float64
 }
 
-func (bl BaselineLearner)Train(features, labels Matrix)(error){
+func (bl BaselineLearner)Train(features, labels toolkit.Matrix)(error){
 	bl.m_labels = make([]float64,labels.Cols())
 	for i := 0; i < labels.Cols(); i++{
 		if labels.ValueCount(i) == 0{

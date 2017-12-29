@@ -1,4 +1,4 @@
-package toolkitGo
+package toolkit
 import (
 "github.com/emirpasic/gods/maps/treemap"
 	"math"

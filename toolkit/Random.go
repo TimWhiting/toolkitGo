@@ -1,4 +1,4 @@
-package toolkitGo
+package toolkit
 
 type Random struct{
 	m_b, m_a uint64
