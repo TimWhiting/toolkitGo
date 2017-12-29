@@ -95,11 +95,11 @@ func (m *Matrix)LoadArff(filename string) {
 		} else {
 			line := src.Text();
 			tokens := strings.Fields(line);
-			fmt.Println("Tokens ",tokens);
+			//fmt.Println("Tokens ",tokens);
 			if len(tokens) > 0 && tokens[0] != "" && tokens[0][0] != '%'{
 				if !READDATA{
 					firstToken := strings.ToUpper(tokens[0]);
-					fmt.Println("First Token ", firstToken)
+					//fmt.Println("First Token ", firstToken)
 					if firstToken == "@RELATION"{
 						datasetName := tokens[1];
 						fmt.Println("Dataset Name: ",datasetName);
@@ -123,7 +123,7 @@ func (m *Matrix)LoadArff(filename string) {
 
 						}else{
 							values := strings.Split(line[strings.Index(line,"{")+1:strings.Index(line,"}")],",")
-							fmt.Println("Values: ", values);
+							//fmt.Println("Values: ", values);
 							for index := range values {
 								ste.Put(values[index],vals);
 								ets.Put(vals,values[index]);

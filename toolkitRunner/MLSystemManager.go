@@ -63,7 +63,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 	learner, _ := ml.GetLearner(args.Learner,toolkit.Random{});
 	data := toolkit.NewEmptyMatrix();
 	data.LoadArff(args.Arff);
-	data.Print();
+	//data.Print();
 	if args.Normalize {
 		fmt.Println("Using normalized data\n")
 		data.Normalize()
