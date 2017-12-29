@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"github.com/TimWhiting/toolkitGo/toolkit"
 	"github.com/TimWhiting/toolkitGo/learners"
+	"github.com/TimWhiting/perceptronLab"
 )
 
 type MLSystemManager struct{
@@ -46,12 +47,11 @@ func main(){
 	ml.Run(args);
 }
 
-func (ml MLSystemManager)GetLearner(mod string, rand toolkit.Random)(toolkit.Learner, error){
+func (ml MLSystemManager)GetLearner(mod string, rand *toolkit.Random)(toolkit.Learner, error){
 	if mod == "baseline" {
 		return &learners.BaselineLearner{}, nil;
 	} else if mod ==("perceptron") {
-		return nil,nil;
-		//return perceptronLab.NewPerceptron(rand), nil;
+		return perceptronLab.NewPerceptron(rand), nil;
 		// else if (model.equals("neuralnet")) return new NeuralNet(rand);
 		// else if (model.equals("decisiontree")) return new DecisionTree();
 		// else if (model.equals("knn")) return new InstanceBasedLearner();
@@ -60,7 +60,7 @@ func (ml MLSystemManager)GetLearner(mod string, rand toolkit.Random)(toolkit.Lea
 	}
 }
 func (ml MLSystemManager)Run(args Args)(error){
-	learner, _ := ml.GetLearner(args.Learner,toolkit.Random{});
+	learner, _ := ml.GetLearner(args.Learner,&toolkit.Random{});
 	data := toolkit.NewEmptyMatrix();
 	data.LoadArff(args.Arff);
 	//data.Print();
@@ -68,7 +68,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Using normalized data\n")
 		data.Normalize()
 	}
-	rand := toolkit.Random{};
+	rand := &toolkit.Random{};
 	fmt.Println();
 	fmt.Println("Dataset name:" ,args.Arff);
 	fmt.Println("Number of instances: ",data.Rows());

@@ -205,7 +205,7 @@ func (m *Matrix)ValueCount(c int)int{
 }
 
 // Shuffles the row order
-func (m *Matrix)Shuffle(rand Random){
+func (m *Matrix)Shuffle(rand *Random){
 	for n := m.Rows(); n > 0; n--{
 		i := rand.NextInt(uint64(n));
 		tmp := m.Row(n-1);
@@ -215,7 +215,7 @@ func (m *Matrix)Shuffle(rand Random){
 }
 
 // Shuffles the row order with a buddy matrix
-func (m *Matrix)ShuffleWithBuddy(rand Random, buddy Matrix ) {
+func (m *Matrix)ShuffleWithBuddy(rand *Random, buddy *Matrix ) {
 	for n := m.Rows(); n > 0; n-- {
 		i := rand.NextInt(uint64(n));
 		tmp := m.Row(n - 1);
