@@ -295,6 +295,8 @@ func (m *Matrix)MostCommonValue(col int)float64 {
 				maxCount = it.Value().(int);
 				val = it.Key().(float64);
 			}
+		}else{
+			break;
 		}
 	}
 	return val;

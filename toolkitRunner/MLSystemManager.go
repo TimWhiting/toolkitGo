@@ -82,10 +82,10 @@ func (ml MLSystemManager)Run(args Args)(error){
 		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
 		fmt.Println("Finished making matrices")
 		confusion := toolkit.NewEmptyMatrix();
-		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
+		startTime :=time.Now();
 		learner.Train(features, labels);
-		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
-		fmt.Println("Time to train (in seconds): " , elapsedTime / 1000.0);
+		elapsedTime := time.Now().Sub(startTime);
+		fmt.Println("Time to train (in seconds): " , elapsedTime.Seconds());
 		accuracy, _ := learner.MeasureAccuracy(features, labels, confusion);
 		fmt.Println("Training set accuracy: " , accuracy);
 		if(args.Verbose) {
@@ -104,10 +104,10 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Number of test instances: " ,testData.Rows());
 		features := toolkit.NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
 		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
-		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
+		startTime :=time.Now();
 		learner.Train(features, labels);
-		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
-		fmt.Println("Time to train (in seconds): " , elapsedTime / 1000.0);
+		elapsedTime := time.Now().Sub(startTime);
+		fmt.Println("Time to train (in seconds): " , elapsedTime.Seconds());
 		trainAccuracy,_ := learner.MeasureAccuracy(features, labels, toolkit.NewEmptyMatrix());
 		fmt.Println("Training set accuracy: " , trainAccuracy);
 		testFeatures := toolkit.NewMatrix(testData, 0, 0, testData.Rows(), testData.Cols() - 1);
@@ -134,10 +134,10 @@ func (ml MLSystemManager)Run(args Args)(error){
 		trainLabels := toolkit.NewMatrix(data, 0, data.Cols() - 1, trainSize, 1);
 		testFeatures := toolkit.NewMatrix(data, trainSize, 0, data.Rows() - trainSize, data.Cols() - 1);
 		testLabels := toolkit.NewMatrix(data, trainSize, data.Cols() - 1, data.Rows() - trainSize, 1);
-		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
+		startTime :=time.Now();
 		learner.Train(trainFeatures, trainLabels);
-		elapsedTime := float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
-		fmt.Println("Time to train (in seconds): " , elapsedTime / 1000.0);
+		elapsedTime := time.Now().Sub(startTime);
+		fmt.Println("Time to train (in seconds): " , elapsedTime.Seconds());
 		trainAccuracy,_ := learner.MeasureAccuracy(trainFeatures, trainLabels, toolkit.NewEmptyMatrix());
 		fmt.Println("Training set accuracy: " ,trainAccuracy);
 		confusion := toolkit.NewEmptyMatrix();
@@ -157,7 +157,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Number of folds: " , folds);
 		reps := 1;
 		sumAccuracy := 0.0;
-		elapsedTime := 0.0;
+		var elapsedTime time.Duration;
 		for j := 0; j < reps; j++ {
 
 			data.Shuffle(rand);
@@ -170,16 +170,16 @@ func (ml MLSystemManager)Run(args Args)(error){
 				testLabels := toolkit.NewMatrix(data, begin, data.Cols() - 1, end - begin, 1);
 				trainFeatures.Add(data, end, 0, data.Rows() - end);
 				trainLabels.Add(data, end, data.Cols() - 1, data.Rows() - end);
-				startTime := float64(time.Now().UnixNano())/float64(time.Millisecond);
+				startTime := time.Now();
 				learner.Train(trainFeatures, trainLabels);
-				elapsedTime += float64(time.Now().UnixNano()/int64(time.Millisecond)) - startTime;
+				elapsedTime = time.Now().Sub(startTime) + elapsedTime;
 				accuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, toolkit.NewEmptyMatrix());
 				sumAccuracy += accuracy;
 				fmt.Println("Rep=" , j , ", Fold=" , i , ", Accuracy=" , accuracy);
 			}
 		}
-		elapsedTime /= float64((reps * int(folds)));
-		fmt.Println("Average time to train (in seconds): " , elapsedTime / 1000.0);
+		timeTotal := elapsedTime.Seconds()/float64((reps * int(folds)));
+		fmt.Println("Average time to train (in seconds): " , timeTotal);
 		fmt.Println("Mean accuracy=" , (sumAccuracy / float64(reps * int(folds))));
 	}
 	return nil;
