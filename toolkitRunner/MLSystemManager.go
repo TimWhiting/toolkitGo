@@ -1,4 +1,4 @@
-package toolkitRunner
+package main
 
 import (
 	"flag"
@@ -28,7 +28,9 @@ func main(){
 	flag.BoolVar(&args.Normalize,"N", false, "normalize")
 	flag.Parse()
 	extra := flag.Args();
-	args.EvalExtra = extra[0];
+	if len(extra) > 0{
+		args.EvalExtra = extra[0];
+	}
 	if args.Arff == "" || args.Learner == "" || args.Evaluation == "" || !(args.Evaluation == "static" || args.Evaluation == "random" || args.Evaluation == "cross" || args.Evaluation == "training" ){
 		fmt.Println("Usage:")
 		fmt.Println("MLSystemManager -L [learningAlgorithm] -A [ARFF_File] -E [evaluationMethod] {[extraParamters]} [OPTIONS]\n");
@@ -61,6 +63,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 	learner, _ := ml.GetLearner(args.Learner,toolkit.Random{});
 	data := toolkit.NewEmptyMatrix();
 	data.LoadArff(args.Arff);
+	data.Print();
 	if args.Normalize {
 		fmt.Println("Using normalized data\n")
 		data.Normalize()
