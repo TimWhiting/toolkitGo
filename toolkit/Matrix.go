@@ -19,12 +19,12 @@ type Matrix struct {
 }
 
 // Creates a 0x0 matrix. You should call loadARFF or setSize next.
-func NewEmptyMatrix()Matrix{
-	return Matrix{};
+func NewEmptyMatrix()*Matrix{
+	return &Matrix{};
 }
 
 // Copies the specified portion of that matrix into this matrix
-func NewMatrix(that Matrix, rowStart, colStart, rowCount, colCount int)Matrix {
+func NewMatrix(that *Matrix, rowStart, colStart, rowCount, colCount int)*Matrix {
 	m := Matrix{};
 	for j := 0; j < rowCount; j++ {
 		rowSrc := that.Row(rowStart + j);
@@ -39,11 +39,11 @@ func NewMatrix(that Matrix, rowStart, colStart, rowCount, colCount int)Matrix {
 		m.m_str_to_enum = append(m.m_str_to_enum,that.m_str_to_enum[colStart + i]);
 		m.m_enum_to_str = append(m.m_enum_to_str,that.m_enum_to_str[colStart + i]);
 	}
-	return m;
+	return &m;
 }
 
 // Adds a copy of the specified portion of that matrix to this matrix
-func (m *Matrix)Add(that Matrix,  rowStart, colStart, rowCount int) {
+func (m *Matrix)Add(that *Matrix,  rowStart, colStart, rowCount int) {
 	if(colStart + m.Cols() > that.Cols()) {
 		panic("out of range");
 	}

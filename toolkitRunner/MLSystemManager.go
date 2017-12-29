@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"github.com/TimWhiting/toolkitGo/toolkit"
 	"github.com/TimWhiting/toolkitGo/learners"
-	"github.com/TimWhiting/perceptronLab"
 )
 
 type MLSystemManager struct{
@@ -49,9 +48,10 @@ func main(){
 
 func (ml MLSystemManager)GetLearner(mod string, rand toolkit.Random)(toolkit.Learner, error){
 	if mod == "baseline" {
-		return learners.BaselineLearner{}, nil;
+		return &learners.BaselineLearner{}, nil;
 	} else if mod ==("perceptron") {
-		return perceptronLab.NewPerceptron(rand), nil;
+		return nil,nil;
+		//return perceptronLab.NewPerceptron(rand), nil;
 		// else if (model.equals("neuralnet")) return new NeuralNet(rand);
 		// else if (model.equals("decisiontree")) return new DecisionTree();
 		// else if (model.equals("knn")) return new InstanceBasedLearner();
@@ -80,6 +80,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Calculating accuracy on training set...");
 		features := toolkit.NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
 		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
+		fmt.Println("Finished making matrices")
 		confusion := toolkit.NewEmptyMatrix();
 		startTime := float64(time.Now().UnixNano()/int64(time.Millisecond));
 		learner.Train(features, labels);

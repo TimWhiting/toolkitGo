@@ -5,9 +5,9 @@ import (
 	"math"
 )
 type Learner interface {
-	Train(features, labels Matrix)error
+	Train(features, labels *Matrix)error
 	Predict(features, labels []float64)error
-	MeasureAccuracy(features,labels,confusion Matrix)(float64,error)
+	MeasureAccuracy(features,labels,confusion *Matrix)(float64,error)
 }
 type SupervisedLearner struct{
 	Learner
@@ -17,13 +17,13 @@ type SupervisedLearner struct{
 
 // Before you call this method, you need to divide your data
 // into a feature matrix and a label matrix.
-func (s SupervisedLearner) Train(features, labels Matrix)error{
+func (s *SupervisedLearner) Train(features, labels *Matrix)error{
 	return nil;
 }
 // A feature vector goes in. A label vector comes out. (Some supervised
 // learning algorithms only support one-dimensional label vectors. Some
 // support multi-dimensional label vectors.)
-func (s SupervisedLearner) Predict(features, labels []float64)error{
+func (s *SupervisedLearner) Predict(features, labels []float64)error{
 	return nil;
 }
 
@@ -31,7 +31,7 @@ func (s SupervisedLearner) Predict(features, labels []float64)error{
 // it returns the predictive accuracy. If the label is continuous, it returns
 // the root mean squared error (RMSE). If confusion is non-NULL, and the
 // output label is nominal, then confusion will hold stats for a confusion matrix.
-func (s SupervisedLearner)MeasureAccuracy(features,labels,confusion Matrix)(float64,error) {
+func (s *SupervisedLearner)MeasureAccuracy(features,labels,confusion *Matrix)(float64,error) {
 	if (features.Rows() != labels.Rows()) {
 		return 0, fmt.Errorf("Expected the features and labels to have the same number of rows");
 	}
