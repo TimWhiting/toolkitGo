@@ -30,10 +30,10 @@ func (r *Random)SetSeed(seed uint64){
 }
 
 func (r *Random)NextFloat64()float64{
-	neg := 1;
+	neg := 1.0;
 	if rand.Intn(2) == 1{
-		neg = -1;
+	//	neg = -1.0;
 	}
-	return rand.Float64()*float64(neg);
+	return rand.Float64()*float64(neg)/2.0;
 }
 

@@ -24,6 +24,7 @@ func (s *SupervisedLearner) Train(features, labels *Matrix)error{
 // learning algorithms only support one-dimensional label vectors. Some
 // support multi-dimensional label vectors.)
 func (s *SupervisedLearner) Predict(features, labels []float64)error{
+	fmt.Println("this prediction is being used")
 	return nil;
 }
 

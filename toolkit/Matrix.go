@@ -95,7 +95,7 @@ func (m *Matrix)LoadArff(filename string) {
 		} else {
 			line := src.Text();
 			tokens := strings.Fields(line);
-			//fmt.Println("Tokens ",tokens);
+			fmt.Println("Tokens ",tokens);
 			if len(tokens) > 0 && tokens[0] != "" && tokens[0][0] != '%'{
 				if !READDATA{
 					firstToken := strings.ToUpper(tokens[0]);
