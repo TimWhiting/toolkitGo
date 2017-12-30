@@ -1,5 +1,7 @@
 package toolkit
 
+import "math/rand"
+
 type Random struct{
 	m_b, m_a uint64
 }
@@ -24,5 +26,14 @@ func (r *Random)Next()uint64{
 func (r *Random)SetSeed(seed uint64){
 	r.m_b = 0xCA535ACA9535ACB2 + seed;
 	r.m_a = 0x6CCF6660A66C35E7 + (seed << 24);
+	rand.Seed(int64(seed));
+}
+
+func (r *Random)NextFloat64()float64{
+	neg := 1;
+	if rand.Intn(2) == 1{
+		neg = -1;
+	}
+	return rand.Float64()*float64(neg);
 }
 
