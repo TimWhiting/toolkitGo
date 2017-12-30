@@ -80,7 +80,6 @@ func (ml MLSystemManager)Run(args Args)(error){
 		fmt.Println("Calculating accuracy on training set...");
 		features := toolkit.NewMatrix(data, 0, 0, data.Rows(), data.Cols() - 1);
 		labels := toolkit.NewMatrix(data, 0, data.Cols() - 1, data.Rows(), 1);
-		fmt.Println("Finished making matrices")
 		confusion := toolkit.NewEmptyMatrix();
 		startTime :=time.Now();
 		learner.Train(features, labels);
