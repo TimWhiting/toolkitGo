@@ -161,6 +161,7 @@ func (ml MLSystemManager)Run(args Args)(error){
 
 			data.Shuffle(rand);
 			for i := 0; i < int(folds); i++ {
+				confusion := toolkit.NewEmptyMatrix();
 				begin := i * data.Rows()/ int(folds);
 				end :=(i + 1) * data.Rows() / int(folds);
 				trainFeatures := toolkit.NewMatrix(data, 0, 0, begin, data.Cols() - 1);
@@ -175,8 +176,16 @@ func (ml MLSystemManager)Run(args Args)(error){
 				accuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, toolkit.NewEmptyMatrix());
 				sumAccuracy += accuracy;
 				fmt.Println("Rep=" , j , ", Fold=" , i , ", Accuracy=" , accuracy);
+				testAccuracy,_ := learner.MeasureAccuracy(testFeatures, testLabels, confusion);
+				fmt.Println("Test set accuracy: " ,testAccuracy);
+				if args.Verbose {
+					fmt.Println("\nConfusion matrix: (Row=target value, Col=predicted value)");
+					confusion.Print();
+					fmt.Println("\n");
+				}
 			}
 		}
+
 		timeTotal := elapsedTime.Seconds()/float64((reps * int(folds)));
 		fmt.Println("Average time to train (in seconds): " , timeTotal);
 		fmt.Println("Mean accuracy=" , (sumAccuracy / float64(reps * int(folds))));

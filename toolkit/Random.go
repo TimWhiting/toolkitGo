@@ -8,13 +8,7 @@ type Random struct{
 
 func (r *Random)NextInt(rangeInt uint64)uint64{
 	// Use rejection to find a random value in a range that is a multiple of "range"
-	n := (0xffffffffffffffff % rangeInt) + 1;
-	var x uint64;
-	for	; x+n < n; {
-		x = r.Next();
-	}
-	// Use modulus to return the final value
-	return x % rangeInt;
+	return uint64(rand.Intn(int(rangeInt)))
 }
 func (r *Random)Next()uint64{
 	// Use rejection to find a random value in a range that is a multiple of "range"

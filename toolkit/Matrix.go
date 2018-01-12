@@ -125,8 +125,8 @@ func (m *Matrix)LoadArff(filename string) {
 							values := strings.Split(line[strings.Index(line,"{")+1:strings.Index(line,"}")],",")
 							//fmt.Println("Values: ", values);
 							for index := range values {
-								ste.Put(values[index],vals);
-								ets.Put(vals,values[index]);
+								ste.Put(strings.TrimSpace(values[index]),vals);
+								ets.Put(vals,strings.TrimSpace(values[index]));
 								vals++;
 							}
 						}
@@ -144,9 +144,13 @@ func (m *Matrix)LoadArff(filename string) {
 						if values[index] == "?"{
 							doubleValue = MISSING;
 						}else if vals == 0{
-							doubleValue , _= strconv.ParseFloat(values[index],64);
+							doubleValue , _= strconv.ParseFloat(strings.TrimSpace(values[index]),64);
 						}else{
-							val1, _ := m.m_str_to_enum[curPos].Get(values[index])
+							//fmt.Println(values[index])
+							val1, err := m.m_str_to_enum[curPos].Get(strings.TrimSpace(values[index]))
+							if !err{
+								panic("Enum not found")
+							}
 							doubleValue = float64(val1.(int));
 						}
 						newrow[curPos] = doubleValue;
@@ -222,7 +226,7 @@ func (m *Matrix)ShuffleWithBuddy(rand *Random, buddy *Matrix ) {
 		m.m_data[n - 1] =  m.Row(int(i));
 		m.m_data[i] = tmp
 		tmp1 := buddy.Row(n - 1);
-		buddy.m_data [n - 1] =  buddy.Row(int(i));
+		buddy.m_data[n - 1] =  buddy.Row(int(i));
 		buddy.m_data[i] = tmp1;
 	}
 }
